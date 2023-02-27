@@ -1,29 +1,29 @@
 <?php
-use Illuminate\Http\Request;
+
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'home'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
 
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
+// Post
+// แบบใหม่ ทำ crud แบบ Route เดียว
+Route::resource('posts', PostController::class)->except(['index']);
 
-Route::get('/posts/create', function () {
-    return view('create');
-})->name('posts.create');
 
-Route::post('/posts', function (Request $request) {
-    $request->validate([
-        'title' => 'required',
-        'description' => ['required', 'min:10']
-    ]);
+// แบบเก่า
+// Route::name('posts.')->prefix('posts')->group(function () {
 
-    return redirect()
-        ->route('posts.create')
-        ->with(
-            'success',
-            'Post is submitted! Title: ' . $request->input('title') . ' Description: ' . $request->input('description'));
+//     Route::get('/posts', [PostController::class, 'index'])->name('index');
 
-})->name('posts.store');
+//     Route::get('/create', [PostController::class, 'create'])->name('create');
+//     Route::post('/', [PostController::class, 'store'])->name('store');
+
+//     Route::get('/{post}', [PostController::class, 'show'])->name('show');
+
+//     Route::get('/{post}/edit', [PostController::class, 'edit'])->name('edit');
+//     Route::put('/{post}', [PostController::class, 'update'])->name('update');
+
+//     Route::delete('/{post}', [PostController::class, 'destroy'])->name('destroy');
+// });
