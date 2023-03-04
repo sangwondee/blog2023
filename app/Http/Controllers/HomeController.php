@@ -8,7 +8,7 @@ class HomeController extends Controller
 {
     public function home()
     {
-        $posts = Post::all();
+        $posts = Post::orderByDesc('id')->get();
 
         return view('home', ['posts' => $posts]);
     }

@@ -1,8 +1,8 @@
 @extends('layout')
-@section('title', 'Home')
+@section('title', 'Create new post')
 
 @section('content')
-<h1>Create a New Blog Post test git</h1>
+<h1>Create a New Blog Post</h1>
 <form method="POST" action="{{ route('posts.store') }}">
     @csrf
     <label>Title</label>
