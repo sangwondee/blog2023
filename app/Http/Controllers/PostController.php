@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostFormRequest;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
@@ -12,17 +12,11 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request)
+    public function store(PostFormRequest $request)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => ['required', 'min:10']
-        ]);
+        $validated = $request->validated();
 
-        $post = new Post();
-        $post->title = $request->input('title');
-        $post->description = $request->input('description');
-        $post->save();
+        $post = Post::create($validated);
 
         return redirect()
             ->route('posts.show', [$post])
@@ -39,28 +33,19 @@ class PostController extends Controller
         return view('posts.edit', ['post' => $post]);
     }
 
-    public function update(Request $request, Post $post)
+    public function update(PostFormRequest $request, Post $post)
     {
-        $request->validate([
-            'title' => 'required',
-            'description' => ['required', 'min:10']
-        ]);
+        $validated = $request->validated();
 
-        $post->title = $request->input('title');
-        $post->description = $request->input('description');
-        $post->save();
+        $post->update($validated);
 
-        return redirect()
-            ->route('posts.show', [$post])
-            ->with('success', 'Post is updated!');
+        return redirect()->route('posts.show', [$post])->with('success', 'Post is updated!');
     }
 
     public function destroy(Post $post)
     {
         $post->delete();
 
-        return redirect()
-            ->route('home')
-            ->with('success', 'Post has be deleted !!!');
+        return redirect()->route('home')->with('success', 'Post has be deleted !!!');
     }
 }
