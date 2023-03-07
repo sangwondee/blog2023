@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostFormRequest;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -16,7 +17,7 @@ class PostController extends Controller
     {
         $validated = $request->validated();
 
-        $post = Post::create($validated);
+        $post = $request->user()->posts()->create($validated);;
 
         return redirect()
             ->route('posts.show', [$post])
@@ -30,11 +31,15 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        $this->authorize('update', $post);
+
         return view('posts.edit', ['post' => $post]);
     }
 
     public function update(PostFormRequest $request, Post $post)
     {
+        $this->authorize('update', $post);
+
         $validated = $request->validated();
 
         $post->update($validated);
@@ -44,6 +49,8 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        $this->authorize('update', $post);
+
         $post->delete();
 
         return redirect()->route('home')->with('success', 'Post has be deleted !!!');
